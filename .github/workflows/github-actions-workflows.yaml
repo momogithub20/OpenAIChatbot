@@ -1,33 +1,47 @@
-name: Github Actions Practice
+name: .NET Build and Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main ]  # Triggers when you push to main branch
+  pull_request:
+    branches: [ main ]  # Also triggers for pull requests targeting main
 
 jobs:
-  Example-Actions-Job:
-    name: Exploring-Github-Actions
-    runs-on: windows-latest
-
+  build-and-test:
+    runs-on: ubuntu-latest  # Uses the latest Ubuntu runner
+    
     steps:
-      # Show trigger info
-      - name: Show event info
-        run: echo "The job was triggered by a ${{ github.event_name }} event"
-
-      # Show OS info
-      - name: Show OS info
-        run: echo "The job is running on ${{ runner.os }}"
-
-      # Show branch and repo
-      - name: Show repo info
-        run: echo "Your branch is ${{ github.ref }} and your repo is ${{ github.repository }}"
-
-      # Checkout code
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Add extra example step
-      - name: List repository files
-        run: dir
-
-      # Another example: print commit author
-      - name: Show commit author
-        run: echo "Last commit pushed by ${{ github.actor }}"
+    # 1. Check out your code
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    # 2. Setup .NET SDK (adjust version to match your project)
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |  # Supports multiple versions
+          6.0.x
+          8.0.x
+    
+    # 3. Restore NuGet packages
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    # 4. Build the solution
+    - name: Build solution
+      run: dotnet build --configuration Release --no-restore
+    
+    # 5. Run all tests in your solution
+    - name: Run tests
+      run: dotnet test --configuration Release --no-build --verbosity normal
+    
+    # 6. Optional: Publish build artifacts (for deployment)
+    - name: Publish build output
+      if: success()  # Only runs if previous steps succeeded
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          **/bin/Release/
+          **/publish/
+        retention-days: 5
