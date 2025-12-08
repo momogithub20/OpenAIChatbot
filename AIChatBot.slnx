@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="AIChatBot/AIChatBot.csproj" />
+  <Project Path="TestPorject.test/TestPorject.test.csproj" />
 </Solution>
