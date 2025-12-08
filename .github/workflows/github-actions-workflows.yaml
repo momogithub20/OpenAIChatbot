@@ -1,0 +1,33 @@
+name: Github Actions Practice
+
+on: [push, pull_request]
+
+jobs:
+  Example-Actions-Job:
+    name: Exploring-Github-Actions
+    runs-on: windows-latest
+
+    steps:
+      # Show trigger info
+      - name: Show event info
+        run: echo "The job was triggered by a ${{ github.event_name }} event"
+
+      # Show OS info
+      - name: Show OS info
+        run: echo "The job is running on ${{ runner.os }}"
+
+      # Show branch and repo
+      - name: Show repo info
+        run: echo "Your branch is ${{ github.ref }} and your repo is ${{ github.repository }}"
+
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Add extra example step
+      - name: List repository files
+        run: dir
+
+      # Another example: print commit author
+      - name: Show commit author
+        run: echo "Last commit pushed by ${{ github.actor }}"
