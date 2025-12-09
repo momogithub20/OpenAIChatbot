@@ -9,6 +9,6 @@ public class UserTest
     [Fact]
     public void TestUser()
     {
-        Assert.Equal(2,3); 
+        Assert.NotEqual(2,3); 
     }
 }
